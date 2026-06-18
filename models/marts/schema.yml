@@ -1,0 +1,44 @@
+# ============================================
+# schema.yml (marts 레이어용)
+# 분석가/BI가 직접 보는 테이블이라 description을 더 꼼꼼하게.
+# persist_docs를 켜두면 description이 DW의 COMMENT로도 반영됨.
+# ============================================
+
+version: 2
+
+models:
+  - name: fct_orders_daily
+    description: |
+      일자 × 지역별 매출 집계 fact 테이블.
+      매일 새벽 Airflow 스케줄로 incremental 빌드됨.
+
+      **사용 시 주의**:
+      - cancelled/refunded 주문은 제외됨
+      - 3일 안전마진으로 늦게 도착하는 데이터 일부 재처리됨
+    columns:
+      - name: order_date
+        description: "주문 발생 일자 (KST)"
+        tests:
+          - not_null
+      - name: region
+        description: "고객 지역 (APAC/NA/EU/OTHER)"
+        tests:
+          - not_null
+      - name: order_cnt
+        description: "완료된 주문 건수"
+      - name: revenue
+        description: "총 매출 (KRW)"
+        tests:
+          - not_null
+
+  - name: dim_customers
+    description: "고객 디멘전. lifetime 통계와 세그멘트 포함"
+    columns:
+      - name: customer_id
+        tests:
+          - not_null
+          - unique
+      - name: customer_segment
+        tests:
+          - accepted_values:
+              values: ['vip', 'regular', 'casual', 'inactive']

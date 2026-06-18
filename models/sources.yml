@@ -1,0 +1,53 @@
+# ============================================
+# sources.yml
+# "원천 테이블"을 dbt에 등록. SQL에서 {{ source('raw', 'orders') }} 로 참조.
+# - 원천 테이블의 실제 스키마 위치를 한 곳에서 관리
+# - 데이터 신선도(freshness) 체크 가능
+# - lineage 그래프에서 원천이 명시적으로 표시됨
+# ============================================
+
+version: 2
+
+sources:
+  - name: raw                           # SQL에서 source('raw', ...) 의 첫 인자
+    description: "Fivetran/Airbyte 등이 적재한 원천 데이터"
+    # [로컬 실습] 원래는 별도 raw_data 스키마였지만, DuckDB에선 seed로 적재한
+    # orders/customers 테이블을 원천처럼 사용 → 둘 다 기본 스키마 main 에 있음.
+    schema: main                        # seed가 적재되는 스키마
+
+    # freshness는 _loaded_at 컬럼이 있어야 동작 (실무 원천엔 적재시각이 있음).
+    # 로컬 seed엔 그 컬럼이 없으니 'dbt source freshness'는 생략. 아래는 문법 참고용.
+    # freshness:
+    #   warn_after: {count: 12, period: hour}
+    #   error_after: {count: 24, period: hour}
+    # loaded_at_field: _loaded_at
+
+    tables:
+      - name: orders                    # source('raw', 'orders') 의 두 번째 인자
+        description: "주문 원천 테이블"
+        columns:
+          - name: order_id
+            description: "주문 PK"
+            tests:
+              - not_null
+              - unique
+          - name: customer_id
+            tests:
+              - not_null
+          - name: order_at
+            description: "주문 발생 시각"
+          - name: status
+            tests:
+              - accepted_values:
+                  values: ['pending', 'completed', 'cancelled', 'refunded']
+          - name: amount
+
+      - name: customers
+        description: "고객 원천 테이블"
+        columns:
+          - name: customer_id
+            tests:
+              - not_null
+              - unique
+          - name: country
+          - name: signup_at

@@ -1,0 +1,15 @@
+# Python 가상환경 (패키지는 requirements로 재현, 폴더 자체는 안 올림)
+venv/
+.venv/
+
+# dbt 생성물 (빌드하면 다시 생김)
+target/
+dbt_packages/
+logs/
+
+# DuckDB 데이터베이스 파일 (dbt seed/run 하면 다시 생김)
+*.duckdb
+*.duckdb.wal
+
+# dbt 익명 사용통계용 ID 파일
+.user.yml

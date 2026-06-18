@@ -1,0 +1,4 @@
+segment,min_lifetime_value,max_lifetime_value
+casual,0,99999
+regular,100000,999999
+vip,1000000,

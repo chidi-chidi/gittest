@@ -1,0 +1,28 @@
+# ============================================
+# profiles.yml
+# DB 접속 정보. 보통 ~/.dbt/profiles.yml 에 두지만,
+# 예시용으로 프로젝트 안에 같이 둠.
+#
+# dbt_project.yml의 profile: 'my_analytics' 와 같은 이름이어야 매칭됨.
+#
+# [로컬 실습용] 원래 Postgres였지만, 별도 DB 서버 없이 바로 돌리려고
+# DuckDB로 바꿈. DuckDB = 파일 하나(dev.duckdb)가 곧 데이터베이스.
+# ============================================
+
+my_analytics:
+  target: dev                  # 기본 target. dbt run 시 --target prod로 바꿀 수 있음
+
+  outputs:
+    # 개발 환경 — 본인 PC에서 dbt run 칠 때 쓰는 접속
+    dev:
+      type: duckdb             # snowflake, bigquery, redshift, postgres 등도 가능
+      path: dev.duckdb         # 이 파일이 곧 DB. 프로젝트 폴더에 생성됨
+      schema: main             # 기본 스키마 (DuckDB 기본값)
+      threads: 1
+
+    # 운영 환경 예시 — 실무에선 보통 이렇게 분리 (지금은 dev만 씀)
+    prod:
+      type: duckdb
+      path: prod.duckdb
+      schema: main
+      threads: 4

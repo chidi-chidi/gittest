@@ -1,0 +1,45 @@
+# ============================================
+# dbt_project.yml
+# 프로젝트의 "루트 설정" 파일. 이 파일이 있으면 dbt 프로젝트.
+# 회사 저장소에 이 파일이 있는지 확인해보면, dbt를 쓰는지 알 수 있음.
+# ============================================
+
+name: 'my_analytics'           # 프로젝트 이름
+version: '1.0.0'
+config-version: 2
+
+# 어떤 profile을 쓸지 — profiles.yml에서 같은 이름을 찾음
+# profiles.yml에는 DB 접속 정보(host, user, password 등)가 있음
+profile: 'my_analytics'
+
+# 각 폴더 역할 정의
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+# ============================================
+# 모델 폴더별 기본 설정 (config의 폴더 단위 적용)
+# 폴더에 새 SQL 파일을 추가하기만 하면 이 설정을 자동 상속
+# ============================================
+models:
+  my_analytics:
+    # staging 폴더: 원천 데이터 정리용 → view로 가볍게
+    staging:
+      +materialized: view
+      +schema: staging        # 최종 스키마는 "타겟스키마_staging"
+
+    # marts 폴더: 비즈니스 마트 → table로 물리화
+    marts:
+      +materialized: table
+      +schema: marts
+
+# 변수 — SQL/매크로에서 {{ var('start_date') }} 로 참조
+vars:
+  start_date: '2024-01-01'

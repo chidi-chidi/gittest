@@ -1,0 +1,43 @@
+# ============================================
+# schema.yml (staging 레이어용)
+# 각 모델의 컬럼 정의 + 테스트 + 문서를 한 곳에서 관리.
+# 회사에서 보시는 "쿼리 외 YAML"이 보통 이런 모양.
+# ============================================
+
+version: 2
+
+models:
+  - name: stg_orders
+    description: "원천 orders 테이블의 정리된 staging 뷰"
+    columns:
+      - name: order_id
+        description: "주문 PK"
+        tests:
+          - not_null
+          - unique           # dbt가 자동으로 SELECT COUNT(*)... 같은 검증 쿼리 생성
+      - name: customer_id
+        tests:
+          - not_null
+          - relationships:                 # 외래키 검증
+              to: ref('stg_customers')
+              field: customer_id
+      - name: order_status
+        tests:
+          - accepted_values:
+              values: ['pending', 'completed', 'cancelled', 'refunded']
+      - name: order_amount
+        tests:
+          - not_null
+
+  - name: stg_customers
+    description: "원천 customers의 정리된 뷰. 지역 매핑 포함"
+    columns:
+      - name: customer_id
+        tests:
+          - not_null
+          - unique
+      - name: region
+        description: "country를 country_to_region 매크로로 묶은 지역"
+        tests:
+          - accepted_values:
+              values: ['APAC', 'NA', 'EU', 'OTHER']
