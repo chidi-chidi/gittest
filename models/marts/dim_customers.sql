@@ -34,7 +34,8 @@ SELECT
     COALESCE(o.lifetime_value, 0)    AS lifetime_value,
     o.first_ordered_at,
     o.last_ordered_at,
-
+    -- 평균 주문금액 = 누적매출 / 누적주문수 (0으로 나누기 방지)
+    ROUND(COALESCE(o.lifetime_value, 0) / NULLIF(o.lifetime_orders, 0), 0) AS avg_order_value,
     -- 세그멘테이션
     CASE
         WHEN o.lifetime_value IS NULL    THEN 'inactive'
