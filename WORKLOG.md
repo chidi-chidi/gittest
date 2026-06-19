@@ -6,6 +6,14 @@
 
 ---
 
+## 진행 상황 (이어서 할 때 여기부터)
+
+- ✅ 1일차: 환경 구축(uv+Py3.12, dbt-duckdb) → 프로젝트 DuckDB 변환 → git+dbt PR 흐름(브랜치→commit→push→PR→merge) → DuckDB 직접 쿼리 → docs/lineage → 문서화(WORKLOG, DBT_MODELING_MAP)
+- ✅ 2일차: **Snapshots(SCD2)** 실습 완료 — `snapshots/customers_snapshot.sql`(check 전략, country 추적). `dbt snapshot`으로 초기 기록 → seed 변경 → 재snapshot으로 이력(valid_from/valid_to) 쌓이는 것 확인.
+- ⬜ **다음(월요일)**: `DBT_MODELING_MAP.md`의 TODO 순서 → **① dbt_utils 패키지** → ② model contract → ③ semantic layer/metric
+
+---
+
 ## 0. 다른 랩탑에서 시작하기 (환경 재현) ★중요
 
 `venv/`와 `dev.duckdb`는 git에 안 올라간다(.gitignore). 그래서 새 PC에선 환경을 다시 만들어야 한다.
