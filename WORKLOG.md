@@ -11,8 +11,9 @@
 - ✅ 1일차: 환경 구축(uv+Py3.12, dbt-duckdb) → 프로젝트 DuckDB 변환 → git+dbt PR 흐름(브랜치→commit→push→PR→merge) → DuckDB 직접 쿼리 → docs/lineage → 문서화(WORKLOG, DBT_MODELING_MAP)
 - ✅ 2일차: **Snapshots(SCD2)** 실습 완료 — `snapshots/customers_snapshot.sql`(check 전략, country 추적). `dbt snapshot`으로 초기 기록 → seed 변경 → 재snapshot으로 이력(valid_from/valid_to) 쌓이는 것 확인.
 - ✅ 3일차: **dbt_utils 패키지** — `packages.yml`+`dbt deps`로 설치(1.4.0). `generate_surrogate_key`로 fct_orders_daily에 `order_region_key` 대리키 추가(CTE로 감싸서), `unique_combination_of_columns` 테스트 추가, `star`로 `orders_public`(order_amount 제외) 모델 생성. full-refresh로 incremental 재빌드.
-- ⬜ **다음**: `DBT_MODELING_MAP.md` TODO → **① model contract**(타입 강제) → ② semantic layer/metric
-- 🧹 정리할 것: `seeds/customers.csv`가 snapshot 실습 때 1번 US로 바뀐 채 커밋 안 됨 (필요시 되돌리거나 커밋)
+- ✅ 4일차: **model contract** — dim_customers에 `contract: enforced` + 컬럼별 data_type 선언(타입 어기면 빌드 실패 확인). **Semantic Layer/MetricFlow** — `dbt-metricflow` 설치, `semantic_orders.yml`(semantic model + metric: revenue/order_count), `metricflow_time_spine`(dbt_utils.date_spine로 날짜축) 추가. `mf query --metrics ... --group-by ...`로 GROUP BY 없이 지표 조회. (개념 위주로 맛봄 — 세부는 다음에)
+- ⬜ **다음 후보**: semantic layer 더 깊이(filter 걸린 지표, granularity), snapshot/contract 실무 적용, 또는 실제 업무 데이터로 미니 프로젝트
+- 🧹 정리: `seeds/customers.csv`는 git restore로 원복 완료
 
 ---
 
@@ -36,6 +37,8 @@ uv venv venv --python 3.12
 
 # 4) dbt(DuckDB 어댑터) 설치
 uv pip install dbt-duckdb
+# (선택) semantic layer 쓰려면 — mf 명령 제공
+uv pip install --python venv/Scripts/python.exe dbt-metricflow
 
 # 5) 한글 Windows 인코딩 문제 방지 (cp949 → UTF-8)
 #    Activate.ps1에 이미 추가돼 있으면 자동. 아니면 세션마다:

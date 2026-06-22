@@ -1,0 +1,57 @@
+# ============================================
+# semantic_orders.yml
+# Semantic Layer (MetricFlow) — 주문 지표를 한 곳에서 정의.
+# 정의해두면 'mf query'로 어떤 차원으로든(상태별/일별...) 일관 조회 가능.
+# ============================================
+
+semantic_models:
+  - name: orders
+    description: "주문 단위 semantic model (grain = 주문 1건)"
+    model: ref('stg_orders')
+    defaults:
+      agg_time_dimension: ordered_at      # 시간 기준 기본 축
+
+    # entity = 키 (조인/식별의 기준)
+    entities:
+      - name: order
+        type: primary
+        expr: order_id
+      - name: customer
+        type: foreign
+        expr: customer_id
+
+    # dimension = 지표를 쪼개는 축
+    dimensions:
+      - name: ordered_at
+        type: time
+        type_params:
+          time_granularity: day
+      - name: order_status
+        type: categorical
+
+    # measure = 집계의 재료 (metric의 부품)
+    measures:
+      - name: sum_order_amount
+        description: "주문 금액 합"
+        agg: sum
+        expr: order_amount
+      - name: count_orders
+        description: "주문 건수"
+        agg: count
+        expr: order_id
+
+# metric = 실제로 조회하는 비즈니스 지표
+metrics:
+  - name: revenue
+    description: "총 매출 (모든 상태 포함)"
+    label: Revenue
+    type: simple
+    type_params:
+      measure: sum_order_amount
+
+  - name: order_count
+    description: "총 주문 수"
+    label: Order Count
+    type: simple
+    type_params:
+      measure: count_orders

@@ -1,0 +1,10 @@
+version: 2
+
+models:
+  - name: metricflow_time_spine
+    description: "MetricFlow 시간축 (일 단위 연속 날짜)"
+    time_spine:
+      standard_granularity_column: date_day
+    columns:
+      - name: date_day
+        granularity: day
