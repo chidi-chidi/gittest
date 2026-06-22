@@ -10,7 +10,9 @@
 
 - ✅ 1일차: 환경 구축(uv+Py3.12, dbt-duckdb) → 프로젝트 DuckDB 변환 → git+dbt PR 흐름(브랜치→commit→push→PR→merge) → DuckDB 직접 쿼리 → docs/lineage → 문서화(WORKLOG, DBT_MODELING_MAP)
 - ✅ 2일차: **Snapshots(SCD2)** 실습 완료 — `snapshots/customers_snapshot.sql`(check 전략, country 추적). `dbt snapshot`으로 초기 기록 → seed 변경 → 재snapshot으로 이력(valid_from/valid_to) 쌓이는 것 확인.
-- ⬜ **다음(월요일)**: `DBT_MODELING_MAP.md`의 TODO 순서 → **① dbt_utils 패키지** → ② model contract → ③ semantic layer/metric
+- ✅ 3일차: **dbt_utils 패키지** — `packages.yml`+`dbt deps`로 설치(1.4.0). `generate_surrogate_key`로 fct_orders_daily에 `order_region_key` 대리키 추가(CTE로 감싸서), `unique_combination_of_columns` 테스트 추가, `star`로 `orders_public`(order_amount 제외) 모델 생성. full-refresh로 incremental 재빌드.
+- ⬜ **다음**: `DBT_MODELING_MAP.md` TODO → **① model contract**(타입 강제) → ② semantic layer/metric
+- 🧹 정리할 것: `seeds/customers.csv`가 snapshot 실습 때 1번 US로 바뀐 채 커밋 안 됨 (필요시 되돌리거나 커밋)
 
 ---
 
