@@ -15,7 +15,18 @@ models:
       **사용 시 주의**:
       - cancelled/refunded 주문은 제외됨
       - 3일 안전마진으로 늦게 도착하는 데이터 일부 재처리됨
+    # 모델 단위 테스트 (dbt_utils 패키지) — order_date+region 조합이 유일한지 검증
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - order_date
+            - region
     columns:
+      - name: order_region_key
+        description: "order_date+region 해시 대리키 (dbt_utils.generate_surrogate_key)"
+        tests:
+          - not_null
+          - unique
       - name: order_date
         description: "주문 발생 일자 (KST)"
         tests:
