@@ -44,12 +44,35 @@ models:
 
   - name: dim_customers
     description: "고객 디멘전. lifetime 통계와 세그멘트 포함"
+    # contract: 켜면 아래 선언한 컬럼·타입과 모델 출력이 정확히 일치해야 빌드 성공.
+    # 타입이 바뀌거나 컬럼이 빠지면 dbt가 빌드를 막아줌 (하류 보호).
+    config:
+      contract:
+        enforced: true
     columns:
       - name: customer_id
+        data_type: integer
         tests:
           - not_null
           - unique
+      - name: country
+        data_type: varchar
+      - name: region
+        data_type: varchar
+      - name: signed_up_at
+        data_type: timestamp
+      - name: lifetime_orders
+        data_type: bigint
+      - name: lifetime_value
+        data_type: decimal(38,2)
+      - name: first_ordered_at
+        data_type: timestamp
+      - name: last_ordered_at
+        data_type: timestamp
+      - name: avg_order_value
+        data_type: double
       - name: customer_segment
+        data_type: varchar
         tests:
           - accepted_values:
               values: ['vip', 'regular', 'casual', 'inactive']
