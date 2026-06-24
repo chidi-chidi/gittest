@@ -12,8 +12,9 @@
 - ✅ 2일차: **Snapshots(SCD2)** 실습 완료 — `snapshots/customers_snapshot.sql`(check 전략, country 추적). `dbt snapshot`으로 초기 기록 → seed 변경 → 재snapshot으로 이력(valid_from/valid_to) 쌓이는 것 확인.
 - ✅ 3일차: **dbt_utils 패키지** — `packages.yml`+`dbt deps`로 설치(1.4.0). `generate_surrogate_key`로 fct_orders_daily에 `order_region_key` 대리키 추가(CTE로 감싸서), `unique_combination_of_columns` 테스트 추가, `star`로 `orders_public`(order_amount 제외) 모델 생성. full-refresh로 incremental 재빌드.
 - ✅ 4일차: **model contract** — dim_customers에 `contract: enforced` + 컬럼별 data_type 선언(타입 어기면 빌드 실패 확인). **Semantic Layer/MetricFlow** — `dbt-metricflow` 설치, `semantic_orders.yml`(semantic model + metric: revenue/order_count), `metricflow_time_spine`(dbt_utils.date_spine로 날짜축) 추가. `mf query --metrics ... --group-by ...`로 GROUP BY 없이 지표 조회. (개념 위주로 맛봄 — 세부는 다음에)
-- ⬜ **다음 후보**: semantic layer 더 깊이(filter 걸린 지표, granularity), snapshot/contract 실무 적용, 또는 실제 업무 데이터로 미니 프로젝트
-- 🧹 정리: `seeds/customers.csv`는 git restore로 원복 완료
+- ✅ 5일차: **macro 실습** — `macros/net_revenue.sql`(completed만 합산하는 "순매출" 매크로) + `models/marts/revenue_by_region.sql`(매크로로 지역별 net_revenue 컬럼). compiled로 `SUM(CASE WHEN...)` 펼쳐짐 확인. 교훈: 계산 로직 재사용은 macro의 영역(semantic layer는 조회용).
+  - 겪은 함정: `git restore`로 seed 파일은 원복됐지만 `dbt seed`를 안 돌려 DB엔 옛 데이터(1번 US) 남아있었음 → `dbt seed && dbt build`로 동기화. **"파일 ≠ DB 데이터, seed는 다시 돌려야 반영"**
+- ⬜ **다음 후보**: semantic layer 더 깊이(filter 지표, granularity), 실무 적용(BigQuery/Snowflake 이전, dev/CI/prod), 또는 실제 업무 데이터로 미니 프로젝트
 
 ---
 
