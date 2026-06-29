@@ -14,7 +14,33 @@
 - ✅ 4일차: **model contract** — dim_customers에 `contract: enforced` + 컬럼별 data_type 선언(타입 어기면 빌드 실패 확인). **Semantic Layer/MetricFlow** — `dbt-metricflow` 설치, `semantic_orders.yml`(semantic model + metric: revenue/order_count), `metricflow_time_spine`(dbt_utils.date_spine로 날짜축) 추가. `mf query --metrics ... --group-by ...`로 GROUP BY 없이 지표 조회. (개념 위주로 맛봄 — 세부는 다음에)
 - ✅ 5일차: **macro 실습** — `macros/net_revenue.sql`(completed만 합산하는 "순매출" 매크로) + `models/marts/revenue_by_region.sql`(매크로로 지역별 net_revenue 컬럼). compiled로 `SUM(CASE WHEN...)` 펼쳐짐 확인. 교훈: 계산 로직 재사용은 macro의 영역(semantic layer는 조회용).
   - 겪은 함정: `git restore`로 seed 파일은 원복됐지만 `dbt seed`를 안 돌려 DB엔 옛 데이터(1번 US) 남아있었음 → `dbt seed && dbt build`로 동기화. **"파일 ≠ DB 데이터, seed는 다시 돌려야 반영"**
-- ⬜ **다음 후보**: semantic layer 더 깊이(filter 지표, granularity), 실무 적용(BigQuery/Snowflake 이전, dev/CI/prod), 또는 실제 업무 데이터로 미니 프로젝트
+---
+
+## 앞으로 할 일 (DA→DAE 전환 실습 로드맵)
+
+> 배경: DA 출신, 마트 쿼리 경험 있음. dbt 운영 / git 협업은 이번에 처음 익히는 중.
+> 목표: "SQL 잘 짜기" → "SQL이 안전하게 운영되는 구조 만들기"
+
+- ⬜ **6일차: Incremental + Backfill 실습** ← 다음 작업
+  - `fct_orders_daily`에 `--vars '{"start_date": "...", "end_date": "..."}'` 받는 로직 추가
+  - `insert_overwrite` 전략으로 멱등 backfill 구현
+  - 데이터 의도적으로 바꾼 뒤 backfill로 덮어써서 동작 확인
+
+- ⬜ **7일차: git 협업 흐름 심화**
+  - 머지 컨플릭트 일부러 만들어서 해결 연습
+  - 커밋 컨벤션(`feat:` / `fix:` / `refactor:`) 적용
+  - PR 리뷰 코멘트 달아보기
+
+- ⬜ **8일차: GitHub Actions CI 세팅**
+  - `.github/workflows/dbt_ci.yml` 작성
+  - PR 오픈 시 `dbt build` 자동 실행 → 실패하면 머지 막히는 구조 체험
+
+- ⬜ **9일차: 테스트 심화 + audit_helper**
+  - singular test(커스텀 SQL 테스트) 직접 작성
+  - `audit_helper`로 모델 변경 전후 데이터 diff 검증
+
+- ⬜ **최종: 실제 업무 쿼리 → dbt 이식 미니 프로젝트**
+  - 현재 DA로 쓰는 마트 쿼리를 staging/mart 레이어로 설계해서 dbt 프로젝트화
 
 ---
 
