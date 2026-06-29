@@ -43,3 +43,4 @@ models:
 # 변수 — SQL/매크로에서 {{ var('start_date') }} 로 참조
 vars:
   start_date: '2024-01-01'
+  end_date:                    # 기본값 없음 — backfill 시에만 --vars로 명시적으로 주입

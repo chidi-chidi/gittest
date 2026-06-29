@@ -9,6 +9,7 @@
 {{ config(
     materialized='incremental',
     unique_key=['order_date', 'region'],
+    incremental_strategy='delete+insert',
     on_schema_change='append_new_columns',
     tags=['daily', 'finance']
 ) }}
@@ -18,10 +19,15 @@ WITH orders AS (
     WHERE order_status = 'completed'
 
     {% if is_incremental() %}
-      -- 2번째 실행부터: 이미 처리한 날짜 이후만 가져옴
-      -- {{ this }} = 현재 모델 자신 (fct_orders_daily)
-      -- 3일치 안전마진을 둠 (늦게 도착하는 데이터 대응)
-      AND ordered_at > (SELECT MAX(order_date) - INTERVAL '3 days' FROM {{ this }})
+      {% if var('start_date', none) is not none and var('end_date', none) is not none %}
+        -- backfill 모드: --vars로 받은 날짜 범위만 처리 (멱등)
+        -- 예) dbt run -s fct_orders_daily --vars '{"start_date":"2024-01-01","end_date":"2024-01-31"}'
+        AND CAST(ordered_at AS DATE) >= '{{ var("start_date") }}'
+        AND CAST(ordered_at AS DATE) <= '{{ var("end_date") }}'
+      {% else %}
+        -- 일반 모드: 최근 3일치 재처리 (늦게 도착하는 데이터 대응)
+        AND ordered_at > (SELECT MAX(order_date) - INTERVAL '3 days' FROM {{ this }})
+      {% endif %}
     {% endif %}
 ),
 
