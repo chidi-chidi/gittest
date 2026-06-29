@@ -21,10 +21,13 @@
 > 배경: DA 출신, 마트 쿼리 경험 있음. dbt 운영 / git 협업은 이번에 처음 익히는 중.
 > 목표: "SQL 잘 짜기" → "SQL이 안전하게 운영되는 구조 만들기"
 
-- ⬜ **6일차: Incremental + Backfill 실습** ← 다음 작업
-  - `fct_orders_daily`에 `--vars '{"start_date": "...", "end_date": "..."}'` 받는 로직 추가
-  - `insert_overwrite` 전략으로 멱등 backfill 구현
-  - 데이터 의도적으로 바꾼 뒤 backfill로 덮어써서 동작 확인
+- ✅ **6일차: Incremental + Backfill 실습**
+  - `fct_orders_daily`에 `delete+insert` 전략 + `--vars`로 날짜 범위 주입하는 backfill 분기 추가
+  - `end_date` 없으면 기존 3일치 재처리(일반 운영), 두 vars 모두 있으면 backfill 모드로 분기
+  - `dbt compile`로 Jinja가 모드별로 다른 SQL 생성하는 것 확인
+  - 겪은 함정: config 블록 안에 `--` 주석 쓰면 Jinja 파싱 에러. config 블록은 Python 영역.
+  - 겪은 함정: `dbt_project.yml`의 `vars`에 `start_date`만 있고 `end_date` 없으면 조건 분기 오작동 → 두 vars 모두 체크하는 조건으로 수정
+  - 배운 개념: git push(코드 배포) ≠ backfill 실행(Airflow 수동 트리거). DAE는 "할 수 있는 구조"를 만들고, 실행은 DE/Airflow가 담당.
 
 - ⬜ **7일차: git 협업 흐름 심화**
   - 머지 컨플릭트 일부러 만들어서 해결 연습
