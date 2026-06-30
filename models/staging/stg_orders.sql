@@ -15,6 +15,10 @@ SELECT
     customer_id,
     CAST(order_at AS TIMESTAMP)     AS ordered_at,    -- 명칭 통일
     LOWER(status)                    AS order_status,
-    CAST(amount AS NUMERIC(18, 2))   AS order_amount
+    CAST(amount AS NUMERIC(18, 2))   AS order_amount,
+      CASE                                                                                                       
+          WHEN CAST(amount AS NUMERIC(18, 2)) >= 100 THEN true                                                   
+          ELSE false                                                                                             
+      END AS is_high_value  
 FROM {{ source('raw', 'orders') }}
 WHERE order_at >= '{{ var("start_date") }}'   -- dbt_project.yml의 변수 사용
