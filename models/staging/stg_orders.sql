@@ -19,6 +19,10 @@ SELECT
     CASE
     WHEN CAST(amount AS NUMERIC(18, 2)) >= 100 THEN 'large'                                                
     ELSE 'small'                                           
-      END AS order_label 
+      END AS order_label,
+      CASE                                                                                                       
+          WHEN CAST(amount AS NUMERIC(18, 2)) >= 100 THEN true                                                   
+          ELSE false                                                                                             
+      END AS is_high_value  
 FROM {{ source('raw', 'orders') }}
 WHERE order_at >= '{{ var("start_date") }}'   -- dbt_project.yml의 변수 사용
