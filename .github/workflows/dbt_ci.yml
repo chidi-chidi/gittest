@@ -1,0 +1,28 @@
+  name: dbt CI
+
+  on:
+    pull_request:
+      branches:
+        - main
+
+  jobs:
+    dbt-build:
+      runs-on: ubuntu-latest
+
+      steps:
+        - name: 코드 체크아웃
+          uses: actions/checkout@v4
+
+        - name: Python 세팅
+          uses: actions/setup-python@v5
+          with:
+            python-version: '3.12'
+
+        - name: dbt 설치
+          run: pip install dbt-duckdb
+
+        - name: dbt 패키지 설치
+          run: dbt deps
+
+        - name: dbt build (run + test)
+          run: dbt build
