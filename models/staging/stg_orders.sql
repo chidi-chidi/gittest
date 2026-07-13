@@ -11,6 +11,7 @@
 -- ============================================
 
 SELECT
+    intentional_error,
     order_id,
     customer_id,
     CAST(order_at AS TIMESTAMP)     AS ordered_at,    -- 명칭 통일
