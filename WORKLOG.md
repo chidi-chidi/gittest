@@ -37,9 +37,12 @@
     - 실무 팁: 같은 파일을 동시에 건드리는 브랜치가 많을수록 충돌 빈도 높아짐 → 브랜치 단위를 작게 유지하는 게   
   중요
 
-- ⬜ **8일차: GitHub Actions CI 세팅**
-  - `.github/workflows/dbt_ci.yml` 작성
-  - PR 오픈 시 `dbt build` 자동 실행 → 실패하면 머지 막히는 구조 체험
+  - ✅ **8일차: GitHub Actions CI 세팅**
+    - `.github/workflows/dbt_ci.yml` 작성 — PR 오픈 시 자동으로 dbt build 실행
+    - 겪은 함정: GitHub PAT에 workflow 스코프 없으면 push 거절됨 → 토큰 권한 추가
+    - CI 통과 후 머지하는 전체 흐름 체험 (PR → Actions 자동 실행 → 초록불 → 머지)
+    - 배운 개념: .github/workflows/ 폴더를 GitHub가 자동 인식. PR마다 서버 띄워서 dbt build 돌려줌
+    - 배운 개념: origin = GitHub 저장소 별명, main = 브랜치 이름. 완전히 다른 개념
 
 - ⬜ **9일차: 테스트 심화 + audit_helper**
   - singular test(커스텀 SQL 테스트) 직접 작성
