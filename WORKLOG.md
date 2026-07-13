@@ -46,9 +46,12 @@
     - branch protection ruleset 설정 — CI 실패 시 머지 버튼 차단 확인
     - 겪은 함정: ruleset 만들어도 Enforcement가 Disabled면 적용 안 됨 → Active로 변경 필요
 
-- ⬜ **9일차: 테스트 심화 + audit_helper**
-  - singular test(커스텀 SQL 테스트) 직접 작성
-  - `audit_helper`로 모델 변경 전후 데이터 diff 검증
+  - ✅ **9일차: 테스트 심화 + audit_helper**
+    - singular test 작성 — `tests/assert_completed_orders_positive_amount.sql` (완료 주문 금액 음수 체크)
+    - 의도적으로 음수 데이터 넣어서 FAIL 확인 → 원복 후 PASS 확인
+    - audit_helper 패키지 설치 — `analyses/audit_orders.sql`로 테이블 변경 전후 diff 비교 템플릿 작성
+    - 배운 개념: generic test(not_null/unique)는 형식 검증, singular test는 비즈니스 로직 검증
+    - 배운 개념: audit_helper는 모델 수정 전후 데이터 diff 확인용 — 테이블명만 바꿔서 재사용
 
 - ⬜ **최종: 실제 업무 쿼리 → dbt 이식 미니 프로젝트**
   - 현재 DA로 쓰는 마트 쿼리를 staging/mart 레이어로 설계해서 dbt 프로젝트화
