@@ -43,6 +43,8 @@
     - CI 통과 후 머지하는 전체 흐름 체험 (PR → Actions 자동 실행 → 초록불 → 머지)
     - 배운 개념: .github/workflows/ 폴더를 GitHub가 자동 인식. PR마다 서버 띄워서 dbt build 돌려줌
     - 배운 개념: origin = GitHub 저장소 별명, main = 브랜치 이름. 완전히 다른 개념
+    - branch protection ruleset 설정 — CI 실패 시 머지 버튼 차단 확인
+    - 겪은 함정: ruleset 만들어도 Enforcement가 Disabled면 적용 안 됨 → Active로 변경 필요
 
 - ⬜ **9일차: 테스트 심화 + audit_helper**
   - singular test(커스텀 SQL 테스트) 직접 작성
