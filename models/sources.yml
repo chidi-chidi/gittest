@@ -51,3 +51,31 @@ sources:
               - unique
           - name: country
           - name: signup_at
+
+      - name: stores
+        description: "매장 정보 원천 테이블"
+        columns:
+          - name: store_id
+            tests:
+              - not_null
+              - unique
+          - name: store_name
+          - name: region
+          - name: city
+
+      - name: store_sales
+        description: "매장 거래 원천 테이블"
+        columns:
+          - name: sale_id
+            tests:
+              - not_null
+              - unique
+          - name: store_id
+            tests:
+              - not_null
+          - name: sale_date
+          - name: amount
+          - name: status
+            tests:
+              - accepted_values:
+                  values: ['completed', 'cancelled', 'refunded']

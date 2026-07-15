@@ -1,0 +1,11 @@
+sale_id,store_id,sale_date,amount,status
+1,1,2024-01-01,15000,completed
+2,2,2024-01-01,32000,completed
+3,3,2024-01-01,8000,cancelled
+4,1,2024-01-02,21000,completed
+5,4,2024-01-02,45000,completed
+6,5,2024-01-02,12000,completed
+7,2,2024-01-03,28000,completed
+8,3,2024-01-03,19000,completed
+9,1,2024-01-03,5000,refunded
+10,4,2024-01-03,38000,completed

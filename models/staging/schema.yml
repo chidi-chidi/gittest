@@ -41,3 +41,42 @@ models:
         tests:
           - accepted_values:
               values: ['APAC', 'NA', 'EU', 'OTHER']
+
+  - name: stg_stores
+    description: "매장정보"
+    columns:
+      - name: store_id
+        description: "매장아이디, pk"
+        tests:
+          - not_null
+          - unique
+      - name: store_name
+        description: "매장한글명"
+      - name: region
+        description: "주소대구분"
+      - name: city
+        description: "주소소구분"
+
+  - name: stg_store_sales
+    description: "매장별 매출액정리"
+    columns:
+      - name: store_id
+        tests:
+          - not_null
+          - relationships:                 # 외래키 검증
+              to: ref('stg_stores')
+              field: store_id
+      - name: sale_id
+        description: "매출번호, pk"
+        tests:
+          - not_null
+          - unique
+      - name: sold_at
+        description: "매출일시"
+      - name: sale_amount
+        description: "매출액"
+      - name: status
+        description: "매출상태"
+        tests:
+          - accepted_values:
+              values: ['completed', 'cancelled', 'refunded']
