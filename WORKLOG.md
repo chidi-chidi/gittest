@@ -53,8 +53,14 @@
     - 배운 개념: generic test(not_null/unique)는 형식 검증, singular test는 비즈니스 로직 검증
     - 배운 개념: audit_helper는 모델 수정 전후 데이터 diff 확인용 — 테이블명만 바꿔서 재사용
 
-- ⬜ **최종: 실제 업무 쿼리 → dbt 이식 미니 프로젝트**
-  - 현재 DA로 쓰는 마트 쿼리를 staging/mart 레이어로 설계해서 dbt 프로젝트화
+  - ✅ **최종 미니 프로젝트: 일별 매장 매출 집계**
+    - 처음부터 직접 설계 — seeds(stores, store_sales) → staging → mart 전체 구조
+    - `stg_stores`, `stg_store_sales` staging 모델 직접 작성 (타입 캐스팅, 컬럼 표준화)
+    - `fct_store_sales_daily` mart 모델 직접 작성 (incremental + delete+insert + backfill 분기)
+    - schema.yml 테스트 직접 작성 (not_null, unique, relationships, accepted_values)
+    - `dbt build` PASS 10/10 확인 — completed 상태만 집계, cancelled/refunded 제외 확인
+    - 배운 것: seed는 실무에서 참조 테이블/테스트용. 실무에선 source()로 raw 테이블 참조
+    - 겪은 함정: 브랜치 안 만들고 main에서 작업 → git switch -c로 새 브랜치에 커밋 옮기기
 
 ---
 
